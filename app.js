@@ -9,23 +9,20 @@ io.on('connection', function (socket) {
 	redisClient.subscribe('display');
 	redisClient.subscribe('remote-control');
 
-	redisClient.on('display', function(channel, message) {
-		socket.emit(channel, message);
-	});
-
 	redisClient.on('remote-control', function(channel, message) {
 		socket.emit(channel, message);
 	});
 
 	socket.on('display', function(message){
-		//TODO: for now send to all channels
-		io.emit('remote-control', {data: {from: message.sender, content: message.content}});
-		io.emit('display', {data: {from: message.sender, content: message.content}});
+		if (message.hasOwnAttribute('command')) {
+			//TODO
+		}
 	});
 	socket.on('remote-control', function(message){
-		//TODO: for now send to all channels
-		io.emit('remote-control', {data: {from: message.sender, content: message.content}});
-		io.emit('display', {data: {from: message.sender, content: message.content}});
+		// if (message.hasOwnAttribute('command')) {
+			//TODO: just send through for now
+			io.emit('display', message);
+		// }
 	});
 
 	socket.on('disconnect', function() {
